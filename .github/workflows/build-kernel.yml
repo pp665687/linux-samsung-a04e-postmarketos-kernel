@@ -118,8 +118,19 @@ jobs:
           # Execute compilation hooks cleanly bypassing interactive requirements
           pmbootstrap --as-root -c ~/.config/pmbootstrap/config checksum linux-samsung-a04e
 
+      - name: Stage Artifacts and Fix Permissions
+        run: |
+          # Create an unprivileged staging directory in the workspace
+          mkdir -p ${{ github.workspace }}/output_packages
+          
+          # Copy built packages from the active localized chroot to staging using sudo
+          sudo cp -r ${{ github.workspace }}/pmb_work/packages/edge/aarch64/. ${{ github.workspace }}/output_packages/
+          
+          # Claim file ownership back to the non-root runner user
+          sudo chown -R $USER:$USER ${{ github.workspace }}/output_packages
+
       - name: Upload Compiled .apk Kernel Package Artifact
         uses: actions/upload-artifact@v4
         with:
           name: postmarketOS-Samsung-A04e-Hybrid-APK
-          path: /root/.local/var/pmbootstrap/chroots/native/home/pmos/packages/aarch64/linux-samsung-a04e-*.apk
+          path: ${{ github.workspace }}/output_packages/linux-samsung-a04e-*.apk
