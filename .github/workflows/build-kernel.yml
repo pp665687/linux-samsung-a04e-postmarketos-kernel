@@ -27,7 +27,7 @@ jobs:
           # Explicit clone from the official pmaports GitLab address
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git /home/runner/.local/var/pmbootstrap/cache_git/pmaports
           
-          # CRITICAL FIXED PATH: Pre-generate configuration into modern path mapping layout
+          # Pre-generate configuration into custom layout path
           mkdir -p ~/.config/pmbootstrap
           cat << 'CFG' > ~/.config/pmbootstrap/config
           [pmbootstrap]
@@ -50,8 +50,8 @@ jobs:
           channel = edge
           CFG
           
-          # Run initialization headlessly
-          pmbootstrap init
+          # Force pmbootstrap to load the custom config explicitly via the -c flag
+          pmbootstrap -c ~/.config/pmbootstrap/config init
            
       - name: Create Toolchain Infrastructure Directories
         run: |
