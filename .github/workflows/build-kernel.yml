@@ -21,8 +21,8 @@ jobs:
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
           
-          # Fixed: Modern non-interactive init configurations for latest pmbootstrap versions
-          pmbootstrap init --config-channel=edge --config-ui=none --provider=none --mirror-alpine=http://alpinelinux.org
+          # Initialize pmbootstrap silently as root without crashing the runner script
+          pmbootstrap --as-root init --config-channel=edge --config-ui=none --provider=none
 
       - name: Create Toolchain Infrastructure Directories
         run: |
@@ -44,21 +44,21 @@ jobs:
 
       - name: Compile Downstream Kernel via pmbootstrap Engine
         run: |
-          # Map execution variables to your exact toolchain extraction directories
+          # Map execution variables to your exact toolchain extraction directories [ravindu644]
           export CLANG_BIN=${{ github.workspace }}/toolchain/clang/host/linux-x86/clang-r383902/bin
           export GCC_BIN=${{ github.workspace }}/toolchain/gcc/arm-gnu-toolchain-14.2.rel1-x86_64_aarch64-none-linux-gnu/bin
           export PATH="${CLANG_BIN}:${GCC_BIN}:${PATH}"
           
           # Inject package files straight into the downstream category tree
-          mkdir -p ~/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/
-          cp -r ${{ github.workspace }}/device/linux-samsung-a04e ~/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/
+          mkdir -p /root/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/
+          cp -r ${{ github.workspace }}/device/linux-samsung-a04e /root/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/
           
           # Force pmbootstrap to digest signature hashes and execute
-          pmbootstrap checksum linux-samsung-a04e
-          pmbootstrap build linux-samsung-a04e --src=${{ github.workspace }} --force
+          pmbootstrap --as-root checksum linux-samsung-a04e
+          pmbootstrap --as-root build linux-samsung-a04e --src=${{ github.workspace }} --force
 
       - name: Upload Compiled .apk Kernel Package Artifact
         uses: actions/upload-artifact@v4
         with:
           name: postmarketOS-Samsung-A04e-Hybrid-APK
-          path: ~/.local/var/pmbootstrap/chroots/native/home/pmos/packages/aarch64/linux-samsung-a04e-*.apk
+          path: /root/.local/var/pmbootstrap/chroots/native/home/pmos/packages/aarch64/linux-samsung-a04e-*.apk
