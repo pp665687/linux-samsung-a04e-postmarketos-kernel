@@ -115,8 +115,11 @@ jobs:
           package() { mkdir -p "$pkgdir"; }
           APK
 
-          # Execute compilation hooks cleanly bypassing interactive requirements
+          # 1. Update compilation checksum profiles
           pmbootstrap --as-root -c ~/.config/pmbootstrap/config checksum linux-samsung-a04e
+
+          # 2. CRITICAL FIX: Run the actual build execution loop command
+          pmbootstrap --as-root -c ~/.config/pmbootstrap/config build linux-samsung-a04e --force
 
       - name: Stage Artifacts and Fix Permissions
         run: |
