@@ -18,7 +18,7 @@ jobs:
       - name: Install and Setup postmarketOS pmbootstrap Engine
         run: |
           # Clean clone from official GitLab source URL
-          git clone --depth=1 https://postmarketos.org
+          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
           
           # Pre-create tracking framework directories and work paths to satisfy verification checks
@@ -27,7 +27,7 @@ jobs:
           mkdir -p /home/runner/.local/var/pmbootstrap/chroots
           
           # Explicit clone from the official pmaports GitLab address
-          git clone --depth=1 https://postmarketos.org /home/runner/.local/var/pmbootstrap/cache_git/pmaports
+          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git /home/runner/.local/var/pmbootstrap/cache_git/pmaports
           
           # INJECT CODENAME DATA EARLY: Put device folder maps in place before initialization check runs
           mkdir -p /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/linux-samsung-a04e
