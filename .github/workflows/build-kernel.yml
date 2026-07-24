@@ -17,11 +17,12 @@ jobs:
 
       - name: Install and Setup postmarketOS pmbootstrap Engine
         run: |
-          # Explicit clone from your provided official GitLab address
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
-          sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/bin/pmbootstrap || sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
-          pmbootstrap init --path=~/.local/var/pmbootstrap --workpath=~/.local/var/pmbootstrap/chroots --mirror-alpine=http://alpinelinux.org --version-edge=true --bkeymaps=us --timezone=UTC --provider=none
-
+          
+          sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
+          
+          pmbootstrap init -a aarch64 -d samsung-a04e -m 4096
+    
       - name: Create Toolchain Infrastructure Directories
         run: |
           mkdir -p toolchain/gcc
