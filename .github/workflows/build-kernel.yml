@@ -85,9 +85,6 @@ jobs:
           channel = edge
           CFG
 
-          # Initialize the framework tree definitions dynamically so it generates the missing _v8 layout paths
-          pmbootstrap --as-root init --config-channel=edge --config-ui=none --provider=none
-
       - name: Create Toolchain Infrastructure Directories
         run: |
           mkdir -p toolchain/gcc
