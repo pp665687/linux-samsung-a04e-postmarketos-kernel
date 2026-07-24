@@ -33,6 +33,9 @@ jobs:
           # Explicit clone from the official pmaports GitLab address
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git ${{ github.workspace }}/pmb_work/cache_git/pmaports
           
+          # Explicit clone from the official pmaports GitLab address
+          git clone --depth=1 https://postmarketos.org ${{ github.workspace }}/pmb_work/cache_git_v8/pmaports
+          
           # Pre-generate modern layout configuration file matching the exact paths structure
           mkdir -p ~/.config/pmbootstrap
           cat << 'CFG' > ~/.config/pmbootstrap/config
