@@ -18,7 +18,7 @@ jobs:
       - name: Install and Setup postmarketOS pmbootstrap Engine
         run: |
           # Clean clone from official GitLab source URL
-          git clone --depth=1 https://postmarketos.org
+          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
           
           # Pre-generate configuration file to bypass the interactive wizard completely
