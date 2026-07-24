@@ -29,19 +29,35 @@ jobs:
           # Explicit clone from the official pmaports GitLab address
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git /home/runner/.local/var/pmbootstrap/cache_git/pmaports
           
-          # INJECT CODENAME DATA EARLY: Put device folder maps in place before initialization check runs
-          mkdir -p /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/linux-samsung-a04e
-          cp -r ${{ github.workspace }}/device/linux-samsung-a04e/* /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/linux-samsung-a04e/
+          # INJECT CODENAME DATA NATIVELY: Inject into standard community target paths layout
+          mkdir -p /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/device-samsung-a04e
+          mkdir -p /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/linux-samsung-a04e
           
-          # Inject a dummy minimal deviceinfo file so pmbootstrap registers the codename architecture target
-          cat << 'DEV' > /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/linux-samsung-a04e/deviceinfo
+          # Copy your custom APKBUILD files to the correct target mapping location
+          cp -r ${{ github.workspace }}/device/linux-samsung-a04e/* /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/linux-samsung-a04e/
+          
+          # Generate a valid clean deviceinfo profile file so the compilation parsing checks succeed
+          cat << 'DEV' > /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/device-samsung-a04e/deviceinfo
           deviceinfo_format_version="0"
           deviceinfo_name="Samsung Galaxy A04e"
           deviceinfo_manufacturer="Samsung"
           deviceinfo_arch="aarch64"
           DEV
 
-          # Pre-generate configuration into custom layout path
+          # Inject dummy placeholder APKBUILD for the device port wrapper
+          cat << 'APK' > /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/device-samsung-a04e/APKBUILD
+          pkgname=device-samsung-a04e
+          pkgver=1
+          pkgrel=0
+          pkgdesc="Samsung Galaxy A04e device package wrapper"
+          arch="aarch64"
+          url="https://github.com"
+          license="MIT"
+          depends="linux-samsung-a04e"
+          package() { mkdir -p "$pkgdir"; }
+          APK
+
+          # Pre-generate modern layout configuration file matching the exact paths structure
           mkdir -p ~/.config/pmbootstrap
           cat << 'CFG' > ~/.config/pmbootstrap/config
           [pmbootstrap]
@@ -63,9 +79,6 @@ jobs:
           user = pmos
           channel = edge
           CFG
-          
-          # Initialize headless verification routing
-          pmbootstrap -c ~/.config/pmbootstrap/config init
            
       - name: Create Toolchain Infrastructure Directories
         run: |
