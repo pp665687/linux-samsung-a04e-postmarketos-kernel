@@ -18,11 +18,34 @@ jobs:
       - name: Install and Setup postmarketOS pmbootstrap Engine
         run: |
           # Clean clone from official GitLab source URL
-          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
+          git clone --depth=1 https://postmarketos.org
           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
           
-          # Initialize pmbootstrap silently as root without crashing the runner script
-           pmbootstrap init --config-channel=edge --config-ui=none --provider=none
+          # Pre-generate configuration file to bypass the interactive wizard completely
+          mkdir -p ~/.config
+          cat << 'CFG' > ~/.config/pmbootstrap.cfg
+          [pmbootstrap]
+          aports = ~/.local/var/pmbootstrap/cache_git/pmaports
+          version = 3
+          work = ~/.local/var/pmbootstrap
+          config_channels_version = 4
+          device = samsung-a04e
+          extra_space = 0
+          is_default_channel_set = True
+          jobs = 4
+          kernel = downstream
+          keymap = us
+          mirror_alpine = http://alpinelinux.org
+          mirrors_postmarketos = http://postmarketos.org
+          provider = none
+          timezone = UTC
+          ui = none
+          user = pmos
+          channel = edge
+          CFG
+          
+          # Run headless initialization 
+          pmbootstrap init
            
       - name: Create Toolchain Infrastructure Directories
         run: |
