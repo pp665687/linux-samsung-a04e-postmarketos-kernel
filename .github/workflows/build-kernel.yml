@@ -115,14 +115,11 @@ jobs:
           package() { mkdir -p "$pkgdir"; }
           APK
 
-          # 1. CRITICAL: Install git natively into the environment running the checksum download
-          pmbootstrap --as-root -c ~/.config/pmbootstrap/config chroot -i git
+          # 1. Update compilation checksum profiles natively inside the build root environment
+          pmbootstrap --as-root -c ~/.config/pmbootstrap/config chroot -- abuild checksum
 
-          # 2. Update profiles allowing remote fetching to download the repository source
-          pmbootstrap --as-root -c ~/.config/pmbootstrap/config checksum linux-samsung-a04e --allow-remote-download
-
-          # 3. Run build process with internal log dumping fallback
-          if ! pmbootstrap --as-root -c ~/.config/pmbootstrap/config build linux-samsung-a04e --force; then
+          # 2. CRITICAL FIX: Direct the engine to run strictly in compiler mode using --packages
+          if ! pmbootstrap --as-root -c ~/.config/pmbootstrap/config build --packages linux-samsung-a04e --force; then
             echo "=========================================================="
             echo "❌ BUILD FAILED: Dumping pmbootstrap log.txt below..."
             echo "=========================================================="
