@@ -21,13 +21,13 @@ jobs:
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
           
-          # Pre-generate configuration file to bypass the interactive wizard completely
+          # Pre-generate configuration file allowing pmbootstrap to handle cloning
           mkdir -p ~/.config
           cat << 'CFG' > ~/.config/pmbootstrap.cfg
           [pmbootstrap]
-          aports = ~/.local/var/pmbootstrap/cache_git/pmaports
+          aports = None
           version = 3
-          work = ~/.local/var/pmbootstrap
+          work = /home/runner/.local/var/pmbootstrap
           config_channels_version = 4
           device = samsung-a04e
           extra_space = 0
@@ -44,7 +44,7 @@ jobs:
           channel = edge
           CFG
           
-          # Run headless initialization 
+          # Initialize headless execution
           pmbootstrap init
            
       - name: Create Toolchain Infrastructure Directories
