@@ -100,18 +100,14 @@ jobs:
 
       - name: Compile Downstream Kernel via pmbootstrap Engine
         run: |
-          # Map execution variables to your exact toolchain extraction directories [ravindu644]
+          # Map execution variables to your exact toolchain extraction directories
           export CLANG_BIN=${{ github.workspace }}/toolchain/clang/host/linux-x86/clang-r383902/bin
           export GCC_BIN=${{ github.workspace }}/toolchain/gcc/arm-gnu-toolchain-14.2.rel1-x86_64_aarch64-none-linux-gnu/bin
           export PATH="${CLANG_BIN}:${GCC_BIN}:${PATH}"
           
-          # Inject package files straight into the downstream category tree
-          mkdir -p /root/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/
-          cp -r ${{ github.workspace }}/device/linux-samsung-a04e /root/.local/var/pmbootstrap/cache_git/pmaports/device/downstream/
-          
-          # Force pmbootstrap to digest signature hashes and execute
-          pmbootstrap --as-root checksum linux-samsung-a04e
-          pmbootstrap --as-root build linux-samsung-a04e --src=${{ github.workspace }} --force
+          # Force root-access flags down to compile routines to prevent chroot permission failures
+          sudo pmbootstrap -c ~/.config/pmbootstrap/config checksum linux-samsung-a04e
+          sudo pmbootstrap -c ~/.config/pmbootstrap/config build linux-samsung-a04e --src=${{ github.workspace }} --force
 
       - name: Upload Compiled .apk Kernel Package Artifact
         uses: actions/upload-artifact@v4
