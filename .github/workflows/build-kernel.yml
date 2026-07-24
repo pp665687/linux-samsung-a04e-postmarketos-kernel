@@ -25,13 +25,14 @@ jobs:
           mkdir -p ${{ github.workspace }}/pmb_work/cache_git
           mkdir -p ${{ github.workspace }}/pmb_work/cache_pkgs
           mkdir -p ${{ github.workspace }}/pmb_work/chroots
+          mkdir -p ${{ github.workspace }}/pmb_work
           
           # CRITICAL FILE MARKER FIX: Write both dotfile and extensionless properties to satisfy checks
           echo "8" > ${{ github.workspace }}/pmb_work/version
           echo "8" > ${{ github.workspace }}/pmb_work/.version
           
           # Explicit clone from the official pmaports GitLab address
-          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git ${{ github.workspace }}/pmb_work/cache_git/pmaports
+          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git ${{ github.workspace }}/pmb_work/cache_git_v8/pmaports
           
           # Pre-generate modern layout configuration file matching the exact paths structure
           mkdir -p ~/.config/pmbootstrap
@@ -48,7 +49,7 @@ jobs:
           jobs = 4
           kernel = downstream
           keymap = us
-          mirror_alpine = http://dl-cdn.alpinelinux.org/alpine/
+          mirror_alpine = http://alpinelinux.org
           mirrors_postmarketos = http://postmarketos.org
           provider = none
           timezone = UTC
@@ -59,7 +60,6 @@ jobs:
           
           # Force migration command to register file trees natively before compilation blocks start
           pmbootstrap --as-root -c ~/.config/pmbootstrap/config work_migrate
-
 
       - name: Create Toolchain Infrastructure Directories
         run: |
