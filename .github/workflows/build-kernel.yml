@@ -21,23 +21,23 @@ jobs:
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
           
-          # Pre-create tracking framework directories and work paths to satisfy verification checks
-          mkdir -p /home/runner/.local/var/pmbootstrap/cache_git
-          mkdir -p /home/runner/.local/var/pmbootstrap/cache_pkgs
-          mkdir -p /home/runner/.local/var/pmbootstrap/chroots
+          # Fixed Pathing: Map everything safely inside the runner workspace directory context
+          mkdir -p ${{ github.workspace }}/pmb_work/cache_git
+          mkdir -p ${{ github.workspace }}/pmb_work/cache_pkgs
+          mkdir -p ${{ github.workspace }}/pmb_work/chroots
           
           # Explicit clone from the official pmaports GitLab address
-          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git /home/runner/.local/var/pmbootstrap/cache_git/pmaports
+          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git ${{ github.workspace }}/pmb_work/cache_git/pmaports
           
           # INJECT CODENAME DATA NATIVELY: Inject into standard community target paths layout
-          mkdir -p /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/device-samsung-a04e
-          mkdir -p /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/linux-samsung-a04e
+          mkdir -p ${{ github.workspace }}/pmb_work/cache_git/pmaports/device/community/device-samsung-a04e
+          mkdir -p ${{ github.workspace }}/pmb_work/cache_git/pmaports/device/community/linux-samsung-a04e
           
           # Copy your custom APKBUILD files to the correct target mapping location
-          cp -r ${{ github.workspace }}/device/linux-samsung-a04e/* /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/linux-samsung-a04e/
+          cp -r ${{ github.workspace }}/device/linux-samsung-a04e/* ${{ github.workspace }}/pmb_work/cache_git/pmaports/device/community/linux-samsung-a04e/
           
           # Generate a valid clean deviceinfo profile file so the compilation parsing checks succeed
-          cat << 'DEV' > /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/device-samsung-a04e/deviceinfo
+          cat << 'DEV' > ${{ github.workspace }}/pmb_work/cache_git/pmaports/device/community/device-samsung-a04e/deviceinfo
           deviceinfo_format_version="0"
           deviceinfo_name="Samsung Galaxy A04e"
           deviceinfo_manufacturer="Samsung"
@@ -45,7 +45,7 @@ jobs:
           DEV
 
           # Inject dummy placeholder APKBUILD for the device port wrapper
-          cat << 'APK' > /home/runner/.local/var/pmbootstrap/cache_git/pmaports/device/community/device-samsung-a04e/APKBUILD
+          cat << 'APK' > ${{ github.workspace }}/pmb_work/cache_git/pmaports/device/community/device-samsung-a04e/APKBUILD
           pkgname=device-samsung-a04e
           pkgver=1
           pkgrel=0
@@ -61,9 +61,10 @@ jobs:
           mkdir -p ~/.config/pmbootstrap
           cat << 'CFG' > ~/.config/pmbootstrap/config
           [pmbootstrap]
-          aports = /home/runner/.local/var/pmbootstrap/cache_git/pmaports
+          aports = ${{ github.workspace }}/pmb_work/cache_git/pmaports
           version = 3
-          work = /home/runner/.local/var/pmbootstrap
+          work = ${{ github.workspace }}/pmb_work
+          work_version = 8
           config_channels_version = 4
           device = samsung-a04e
           extra_space = 0
@@ -105,7 +106,7 @@ jobs:
           export GCC_BIN=${{ github.workspace }}/toolchain/gcc/arm-gnu-toolchain-14.2.rel1-x86_64_aarch64-none-linux-gnu/bin
           export PATH="${CLANG_BIN}:${GCC_BIN}:${PATH}"
           
-          # Fixed: Use native --as-root parameter option instead of the global system 'sudo' block
+          # Use native --as-root parameter option instead of the global system 'sudo' block
           pmbootstrap --as-root -c ~/.config/pmbootstrap/config checksum linux-samsung-a04e
           pmbootstrap --as-root -c ~/.config/pmbootstrap/config build linux-samsung-a04e --src=${{ github.workspace }} --force
 
