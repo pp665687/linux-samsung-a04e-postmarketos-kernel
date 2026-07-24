@@ -20,7 +20,11 @@ jobs:
           # Clean clone from official GitLab source URL
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
+          # Pre-create tracking framework directories
+          mkdir -p /home/runner/.local/var/pmbootstrap/cache_git
           
+          # Explicit clone from the official pmaports GitLab address you provided
+          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git /home/runner/.local/var/pmbootstrap/cache_git/pmaports
           # Pre-generate configuration file allowing pmbootstrap to handle cloning
           mkdir -p ~/.config
           cat << 'CFG' > ~/.config/pmbootstrap.cfg
