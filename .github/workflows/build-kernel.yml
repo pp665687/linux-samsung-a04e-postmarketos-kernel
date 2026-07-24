@@ -20,16 +20,18 @@ jobs:
           # Clean clone from official GitLab source URL
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
+          
           # Pre-create tracking framework directories
           mkdir -p /home/runner/.local/var/pmbootstrap/cache_git
           
-          # Explicit clone from the official pmaports GitLab address you provided
+          # Explicit clone from the official pmaports GitLab address
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git /home/runner/.local/var/pmbootstrap/cache_git/pmaports
-          # Pre-generate configuration file allowing pmbootstrap to handle cloning
+          
+          # Pre-generate configuration file mapping the exact pmaports path to bypass prompts
           mkdir -p ~/.config
           cat << 'CFG' > ~/.config/pmbootstrap.cfg
           [pmbootstrap]
-          aports = None
+          aports = /home/runner/.local/var/pmbootstrap/cache_git/pmaports
           version = 3
           work = /home/runner/.local/var/pmbootstrap
           config_channels_version = 4
@@ -48,7 +50,7 @@ jobs:
           channel = edge
           CFG
           
-          # Initialize headless execution
+          # Initialize headless execution safely
           pmbootstrap init
            
       - name: Create Toolchain Infrastructure Directories
