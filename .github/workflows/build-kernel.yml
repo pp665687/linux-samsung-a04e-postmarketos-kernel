@@ -22,8 +22,8 @@ jobs:
           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
           
           # Initialize pmbootstrap silently as root without crashing the runner script
-          pmbootstrap --as-root init --config-channel=edge --config-ui=none --provider=none
-
+           pmbootstrap init --config-channel=edge --config-ui=none --provider=none
+           
       - name: Create Toolchain Infrastructure Directories
         run: |
           mkdir -p toolchain/gcc
