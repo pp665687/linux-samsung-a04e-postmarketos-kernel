@@ -115,10 +115,10 @@ jobs:
           package() { mkdir -p "$pkgdir"; }
           APK
 
-          # 1. Update compilation checksum profiles natively inside the build root environment
-          pmbootstrap --as-root -c ~/.config/pmbootstrap/config chroot -- abuild checksum
+          # 1. FIXED CHECKSUM: Use the correct pmbootstrap argument order to download and hash code safely
+          pmbootstrap --as-root -c ~/.config/pmbootstrap/config checksum linux-samsung-a04e
 
-          # 2. CRITICAL FIX: Direct the engine to run strictly in compiler mode using --packages
+          # 2. RUN BUILD: Compile strictly as a package to avoid unprivileged loop device errors
           if ! pmbootstrap --as-root -c ~/.config/pmbootstrap/config build --packages linux-samsung-a04e --force; then
             echo "=========================================================="
             echo "❌ BUILD FAILED: Dumping pmbootstrap log.txt below..."
