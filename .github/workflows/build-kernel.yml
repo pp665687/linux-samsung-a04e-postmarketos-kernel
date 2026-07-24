@@ -123,8 +123,8 @@ jobs:
           # Create an unprivileged staging directory in the workspace
           mkdir -p ${{ github.workspace }}/output_packages
           
-          # Copy built packages from the active localized chroot to staging using sudo
-          sudo cp -r ${{ github.workspace }}/pmb_work/packages/edge/aarch64/. ${{ github.workspace }}/output_packages/
+          # Find and copy any built apk package from the pmb_work directory using sudo
+          sudo find ${{ github.workspace }}/pmb_work/packages/ -name "linux-samsung-a04e-*.apk" -exec cp {} ${{ github.workspace }}/output_packages/ \;
           
           # Claim file ownership back to the non-root runner user
           sudo chown -R $USER:$USER ${{ github.workspace }}/output_packages
