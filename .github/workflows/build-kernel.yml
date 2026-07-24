@@ -26,7 +26,8 @@ jobs:
           mkdir -p ${{ github.workspace }}/pmb_work/cache_pkgs
           mkdir -p ${{ github.workspace }}/pmb_work/chroots
           
-          # CRITICAL FIXED FILE POSITION: Must be a dotfile .version inside the work root folder
+          # FIXED: Only create the root pmb_work path. Let pmbootstrap generate its own internal _v8 folders natively.
+          mkdir -p ${{ github.workspace }}/pmb_work
           echo "8" > ${{ github.workspace }}/pmb_work/.version
           
           # Explicit clone from the official pmaports GitLab address
@@ -83,7 +84,10 @@ jobs:
           user = pmos
           channel = edge
           CFG
-           
+
+          # Initialize the framework tree definitions dynamically so it generates the missing _v8 layout paths
+          pmbootstrap --as-root init --config-channel=edge --config-ui=none --provider=none
+
       - name: Create Toolchain Infrastructure Directories
         run: |
           mkdir -p toolchain/gcc
