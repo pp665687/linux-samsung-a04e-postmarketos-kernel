@@ -15,14 +15,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y bc bison flex libssl-dev gcc g++ clang python3 libncurses5-dev ccache make git wget xz-utils device-tree-compiler libfdt-dev python3-pip sudo openssl
 
-      - name: Install and Setup postmarketOS pmbootstrap Engine
-        run: |
-          git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
-          
-          sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
-          sudo chmod +x /usr/local/bin/pmbootstrap
-          
-          pmbootstrap init --path=~/.local/var/pmbootstrap --workpath=~/.local/var/pmbootstrap/chroots --mirror-alpine=http://alpinelinux.org --bkeymaps=us --timezone=UTC --ui=none
+       - name: Install and Setup postmarketOS pmbootstrap Engine
+         run: |
+           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmbootstrap.git
+    
+           sudo ln -s "$PWD/pmbootstrap/pmbootstrap.py" /usr/local/bin/pmbootstrap
+           sudo chmod +x /usr/local/bin/pmbootstra  
+        pmbootstrap init \
+          --path ~/.local/var/pmbootstrap \
+          --workpath ~/.local/var/pmbootstrap/chroots \
+          --mirror-alpine http://alpinelinux.org \
+          --bkeymaps us \
+          --timezone UTC \
+          --ui none \
+          -y
     
       - name: Create Toolchain Infrastructure Directories
         run: |
