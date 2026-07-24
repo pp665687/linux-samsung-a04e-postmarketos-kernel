@@ -26,8 +26,8 @@ jobs:
           mkdir -p ${{ github.workspace }}/pmb_work/cache_pkgs
           mkdir -p ${{ github.workspace }}/pmb_work/chroots
           
-          # CRITICAL STEP: Write the version file marker to satisfy the version check instantly
-          echo "8" > ${{ github.workspace }}/pmb_work/version.txt
+          # CRITICAL FIXED FILE POSITION: Must be a dotfile .version inside the work root folder
+          echo "8" > ${{ github.workspace }}/pmb_work/.version
           
           # Explicit clone from the official pmaports GitLab address
           git clone --depth=1 https://gitlab.postmarketos.org/postmarketOS/pmaports.git ${{ github.workspace }}/pmb_work/cache_git/pmaports
