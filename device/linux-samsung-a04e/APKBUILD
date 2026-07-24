@@ -11,8 +11,13 @@ options="!strip !check !debug"
 _carch="arm64"
 _config="config-samsung-a04e.${arch}"
 
+# PROVIDE REPO URL: Replace with your actual kernel source URL and branch name
+_repo_url="https://github.com"
+_branch="YOUR_KERNEL_BRANCH_NAME"
+
 source="
 	$_config
+	$pkgname-$pkgver::git+$_repo_url#branch=$_branch
 "
 
 build() {
@@ -21,6 +26,10 @@ build() {
 	export CLANG_TRIPLE="aarch64-none-linux-gnu-"
 	export CROSS_COMPILE="aarch64-none-linux-gnu-"
 
+	# Move into the dynamically downloaded source code folder
+	cd "$srcdir/$pkgname-$pkgver"
+
+	# Inject configuration file
 	cp "$srcdir/$_config" .config
 
 	make olddefconfig
@@ -28,6 +37,7 @@ build() {
 }
 
 package() {
+	cd "$srcdir/$pkgname-$pkgver"
 	mkdir -p "$pkgdir"/boot
 	cp arch/arm64/boot/Image.gz "$pkgdir"/boot/vmlinuz
 }
@@ -35,3 +45,4 @@ package() {
 sha512sums="
 # Handled automatically by the workflow run
 "
+
