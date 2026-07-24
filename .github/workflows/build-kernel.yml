@@ -116,7 +116,7 @@ jobs:
           APK
 
           # 1. CRITICAL: Install git natively into the environment running the checksum download
-          pmbootstrap --as-root -c ~/.config/pmbootstrap/config chroot --apk-tools-static install git
+          pmbootstrap --as-root -c ~/.config/pmbootstrap/config chroot -i git
 
           # 2. Update profiles allowing remote fetching to download the repository source
           pmbootstrap --as-root -c ~/.config/pmbootstrap/config checksum linux-samsung-a04e --allow-remote-download
