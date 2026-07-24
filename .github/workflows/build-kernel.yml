@@ -26,8 +26,8 @@ jobs:
           mkdir -p ${{ github.workspace }}/pmb_work/cache_pkgs
           mkdir -p ${{ github.workspace }}/pmb_work/chroots
           
-          # FIXED: Only create the root pmb_work path. Let pmbootstrap generate its own internal _v8 folders natively.
-          mkdir -p ${{ github.workspace }}/pmb_work
+          # CRITICAL FILE MARKER FIX: Write both dotfile and extensionless properties to satisfy checks
+          echo "8" > ${{ github.workspace }}/pmb_work/version
           echo "8" > ${{ github.workspace }}/pmb_work/.version
           
           # Explicit clone from the official pmaports GitLab address
