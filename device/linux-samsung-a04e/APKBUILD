@@ -1,0 +1,37 @@
+# Maintainer: Your Name <your.email@example.com>
+pkgname=linux-samsung-a04e
+pkgver=4.19.325
+pkgrel=0
+pkgdesc="Samsung Galaxy A04e postmarketOS kernel downstream port"
+arch="aarch64"
+url="https://github.com"
+license="GPL-2.0-only"
+options="!strip !check !debug"
+
+_carch="arm64"
+_config="config-samsung-a04e.${arch}"
+
+source="
+	$_config
+"
+
+build() {
+	export ARCH="arm64"
+	export CC="clang"
+	export CLANG_TRIPLE="aarch64-none-linux-gnu-"
+	export CROSS_COMPILE="aarch64-none-linux-gnu-"
+
+	cp "$srcdir/$_config" .config
+
+	make olddefconfig
+	make -j$(nproc) Image.gz
+}
+
+package() {
+	mkdir -p "$pkgdir"/boot
+	cp arch/arm64/boot/Image.gz "$pkgdir"/boot/vmlinuz
+}
+
+sha512sums="
+# Handled automatically by the workflow run
+"
