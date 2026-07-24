@@ -118,8 +118,14 @@ jobs:
           # 1. Update compilation checksum profiles
           pmbootstrap --as-root -c ~/.config/pmbootstrap/config checksum linux-samsung-a04e
 
-          # 2. CRITICAL FIX: Run the actual build execution loop command
-          pmbootstrap --as-root -c ~/.config/pmbootstrap/config build linux-samsung-a04e --force
+          # 2. Run build process with internal log dumping fallback
+          if ! pmbootstrap --as-root -c ~/.config/pmbootstrap/config build linux-samsung-a04e --force; then
+            echo "=========================================================="
+            echo "❌ BUILD FAILED: Dumping pmbootstrap log.txt below..."
+            echo "=========================================================="
+            sudo cat ${{ github.workspace }}/pmb_work/log.txt
+            exit 1
+          fi
 
       - name: Stage Artifacts and Fix Permissions
         run: |
