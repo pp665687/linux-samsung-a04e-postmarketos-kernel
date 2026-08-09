@@ -12,8 +12,9 @@ _carch="arm64"
 _config="config-samsung-a04e.${arch}"
 
 # PROVIDE REPO URL: Replace with your actual kernel source URL and branch name
-_repo_url="https://github.com"
-_branch="YOUR_KERNEL_BRANCH_NAME"
+url="https://github.com/pp665687/linux-samsung-a04e-postmarketos-kernel"
+_repo_url="https://github.com/pp665687/linux-samsung-a04e-postmarketos-kernel"
+_branch="main"
 
 source="
 	$_config
